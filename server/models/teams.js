@@ -28,7 +28,12 @@ const TeamSchema = new mongoose.Schema({
       },
       message: "Captain must be one of the players in the team"
     }
-  }
-}, { timestamps: true });
+  },
+  lastYearStatus: {
+  type: String,
+  enum: ["winner", "runnerup", "semi_winner", "semi_runner", "other"],
+  default: "other"
+}
+},{ timestamps: true });
 const Teams = mongoose.model("Team", TeamSchema);
 export default Teams;
