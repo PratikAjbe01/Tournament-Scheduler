@@ -1,44 +1,68 @@
-// models/Tournament.js
-const mongoose = require("mongoose");
-
-const TournamentSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Tournament name is required"]
-  },
-  department: {
-    type: String
-  },
-  organizer: {
-    type: String,
-    required: [true, "Organizer is required"]
-  },
-  frequencyOfMatches: {
-    type: Number,// e.g., "Weekly", "Daily", or Number of matches
-    required: true
-  },
-  startDate: {
-    type: Date,
-    required: true
-  },
-  endDate: {
-    type: Date,
-    required: true
-  },
-  matchStartTime: {
-    type: String, // HH:MM format
-    required: true
-  },
-  venue: {
-    type: String,
-    required: true
-  },
-  schedules: [
-    {
+// ============================================
+// TOURNAMENT MODEL
+// ============================================
+import mongoose from "mongoose";
+const tournamentSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Tournament name is required"],
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    eventId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Schedule"
-    }
-  ]
-}, { timestamps: true });
+      ref: "Event",
+      required: true,
+    },
+    teams: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Team",
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["upcoming", "ongoing", "completed"],
+      default: "upcoming",
+    },
+    currentRound: {
+      type: Number,
+      default: 1,
+    },
+    totalRounds: {
+      type: Number,
+      required: true,
+    },
+    totalTeams: {
+      type: Number,
+      required: true,
+    },
+    totalByes: {
+      type: Number,
+      default: 0,
+    },
+    // Teams that got bye (implicit, no match needed)
+    teamsWithBye: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Team",
+      },
+    ],
+    startDate: {
+      type: Date,
+      default: null,
+    },
+    endDate: {
+      type: Date,
+      default: null,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model("Tournament", TournamentSchema);
+const Tournament = mongoose.model("Tournament", tournamentSchema);
+export default Tournament;
